@@ -62,6 +62,7 @@ dctZZ = {'000': 0, '001': 0, '010': 0, '011': 0, '100': 0, '101': 0, '110': 0, '
 l_dct = []
 l_zz = []
 l_zzy = []
+l_l_zz = []
 l_dctZZ = []
 for j in Z:
 
@@ -106,33 +107,39 @@ for i in Z:
 i1 =max(I)
 Z1_ind = I.index(i1)
 Z1 = Z[Z1_ind]
-print(Z1)
 
 Zi = []
 Zi.append(Z1)
 mm = 0
 f = 0
 
-l_zz.append(dict(dct))
-
 while f <= d:
-    mm = 0
+
     for p in Zi:
+        mm = 0
+        print(p)
         for j in Z:
+            l_zz.append(dict(dct))
             # dla każdej pary cech liczymy informację prawdopodobieństwo wystąpienia par
-            n = 0
+            # n = 0
             for i in j:
-                yy = Y[n]
-                x = str(i) + str(p[i])
-                ky = x + str(yy)
-                n += 1
-                l_zz[mm][ky] += 1           # wystąpienia par zapisane w slowniku, nowe "p_x", prawdopodobieństwa trójek potem
+                # yy = Y[n]
+                x = str(p[i]) + str(i)
+                # ky = x + str(yy)
+                # n += 1
+                l_zz[mm][x] += 1           # wystąpienia par zapisane w slowniku, nowe "p_x", prawdopodobieństwa trójek potem
             mm += 1
-    f += 1
+        print(l_zz)
+        print(len(l_zz))
+        l_l_zz.append(l_zz)
+        l_zz = []
+        f += 1
 
     # ogarnąć trójki (poniżej) !
     mm = 0
+    q = 0
     for p in Zi:
+        l_zzy.append(dict(dctZZ))
         for j in Z:
             # dla każdej pary cech liczymy informację prawdopodobieństwo wystąpienia par
             n = 0
@@ -141,20 +148,20 @@ while f <= d:
                 x = str(i) + str(yy)
                 ky = x + str(yy)
                 n += 1
-                l_zzy[mm][ky] += 1  # wystąpienia trójek zapisane w slowniku, nowe "p_xy"
+                l_zzy[-1][ky] += 1  # wystąpienia trójek zapisane w slowniku, nowe "p_xy"
             mm += 1
 
-            # P_z = prawdopodobieństwo wystąpienia trójki
+            P_z = [] # prawdopodobieństwo wystąpienia trójki
 
     for i in Z:                                 # ogarnąć TRÓJKI
-        px000 = l_dct[q]['000'] / N             # to jest p(x,y), że x1=0, x2 = 0, y=0
-        px001 = l_dct[q]['001'] / N
-        px010 = l_dct[q]['010'] / N
-        px011 = l_dct[q]['011'] / N
-        px100 = l_dct[q]['100'] / N
-        px101 = l_dct[q]['101'] / N
-        px110 = l_dct[q]['110'] / N
-        px111 = l_dct[q]['111'] / N
+        px000 = l_zzy[q]['000'] / N             # to jest p(x,y), że x1=0, x2 = 0, y=0
+        px001 = l_zzy[q]['001'] / N
+        px010 = l_zzy[q]['010'] / N
+        px011 = l_zzy[q]['011'] / N
+        px100 = l_zzy[q]['100'] / N
+        px101 = l_zzy[q]['101'] / N
+        px110 = l_zzy[q]['110'] / N
+        px111 = l_zzy[q]['111'] / N
 
         pzz00 = 1 - P_z[q]
         pzz01 = P_z[q]
@@ -177,9 +184,8 @@ while f <= d:
 
     iz = max(Izz)
     iz_ind = Izz.index(i1)
-    Zn = Z[iz_ind]     #to ma być wiersz, który "wybieram"
-    Zi.append(Zn
-
+    Zn = Z[iz_ind]     # to ma być wiersz, który "wybieram"
+    Zi.append(Zn)
 
 
 
