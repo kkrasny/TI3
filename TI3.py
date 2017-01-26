@@ -121,18 +121,17 @@ while f <= d:
         for j in Z:
             l_zz.append(dict(dct))
             # dla każdej pary cech liczymy informację prawdopodobieństwo wystąpienia par
-            # n = 0
+            n = 0
             for i in j:
                 # yy = Y[n]
-                x = str(p[i]) + str(i)
+                x = str(p[n]) + str(i)
                 # ky = x + str(yy)
-                # n += 1
-                l_zz[mm][x] += 1           # wystąpienia par zapisane w slowniku, nowe "p_x", prawdopodobieństwa trójek potem
+                n += 1
+                l_zz[mm][x] += 1           # wystąpienia par w slowniku, nowe "p_x", prawdopodobieństwa trójek potem
             mm += 1
         print(l_zz)
         print(len(l_zz))
-        l_l_zz.append(l_zz)
-        l_zz = []
+        l_l_zz.append(l_zz)                 # lista list, listy odpowiadają wybranym cechom, słowniki w nich kolejno wszystkim cechom
         f += 1
 
     # ogarnąć trójki (poniżej) !
