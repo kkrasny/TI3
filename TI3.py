@@ -63,7 +63,10 @@ l_dct = []
 l_zz = []
 l_zzy = []
 l_l_zz = []
+l_l_zzy = []
 l_dctZZ = []
+Zi_ind = []
+
 for j in Z:
 
     l_dct.append(dict(dct))
@@ -82,9 +85,7 @@ for j in Z:
         l_dct[m][ky] += 1
     m += 1
 
-
-
-N = n       #ilosc wektorów X, nie cech
+N = n       # ilosc wektorów X, nie cech
 q = 0
 for i in Z:
     px00 = l_dct[q]['00'] / N           # to jest prawdopodobieństrwo, że p(x,y) x=0, y=0
@@ -104,12 +105,15 @@ for i in Z:
     I.append(Ii)
     q += 1
 
-i1 =max(I)
-Z1_ind = I.index(i1)
-Z1 = Z[Z1_ind]
+i1 = max(I)             # wybrana pierwsza cecha (wartość)
+Z1_ind = I.index(i1)    #indeks pierwszej wybranej cechy
+Z1 = Z[Z1_ind]          # wybrana pierwsza cecha (wektor)
 
 Zi = []
 Zi.append(Z1)
+Z2 = list(Z)
+Z.remove(Z1)
+
 mm = 0
 f = 0
 
@@ -120,71 +124,79 @@ while f <= d:
         print(p)
         for j in Z:
             l_zz.append(dict(dct))
-            # dla każdej pary cech liczymy informację prawdopodobieństwo wystąpienia par
-            n = 0
-            for i in j:
-                # yy = Y[n]
-                x = str(p[n]) + str(i)
-                # ky = x + str(yy)
-                n += 1
-                l_zz[mm][x] += 1           # wystąpienia par w slowniku, nowe "p_x", prawdopodobieństwa trójek potem
-            mm += 1
-        print(l_zz)
-        print(len(l_zz))
-        l_l_zz.append(l_zz)                 # lista list, listy odpowiadają wybranym cechom, słowniki w nich kolejno wszystkim cechom
-        f += 1
-
-    # ogarnąć trójki (poniżej) !
-    mm = 0
-    q = 0
-    for p in Zi:
-        l_zzy.append(dict(dctZZ))
-        for j in Z:
+            l_zzy.append(dict(dctZZ))
             # dla każdej pary cech liczymy informację prawdopodobieństwo wystąpienia par
             n = 0
             for i in j:
                 yy = Y[n]
-                x = str(i) + str(yy)
+                x = str(p[n]) + str(i)
+                zzy = x + str(yy)
                 ky = x + str(yy)
                 n += 1
-                l_zzy[-1][ky] += 1  # wystąpienia trójek zapisane w slowniku, nowe "p_xy"
-            mm += 1
+                l_zz[mm][x] += 1           # wystąpienia par w slowniku, nowe "p_x", prawdopodobieństwa trójek potem
+                l_zzy[mm][ky] += 1
+            mm += 1                        # prawdopodobieństwo liczone już w obliczeniach do informacji
+        l_l_zz.append(l_zz)    # lista list, listy odpowiadają "ważnym" cechom, słowniki w nich kolejno wszystkim cechom
+        l_l_zzy.append(l_zzy)  # jak wyżej, ale już połączone z Y
+        f += 1
+    print(l_l_zzy)
+    P_z = l_l_zz
+    print(P_z)
 
-            P_z = [] # prawdopodobieństwo wystąpienia trójki
+    # ogarnąć trójki (poniżej) !
+    mm = 0
 
-    for i in Z:                                 # ogarnąć TRÓJKI
-        px000 = l_zzy[q]['000'] / N             # to jest p(x,y), że x1=0, x2 = 0, y=0
-        px001 = l_zzy[q]['001'] / N
-        px010 = l_zzy[q]['010'] / N
-        px011 = l_zzy[q]['011'] / N
-        px100 = l_zzy[q]['100'] / N
-        px101 = l_zzy[q]['101'] / N
-        px110 = l_zzy[q]['110'] / N
-        px111 = l_zzy[q]['111'] / N
-
-        pzz00 = 1 - P_z[q]
-        pzz01 = P_z[q]
-        pzz10 = 1 - P_z[q]
-        pzz11 = P_z[q]
-        py0 = 1 - P_y
-        py1 = P_y
-
-        x00y0 = px00 * log2(px00 / (pzz00 * py0))
-        x00y1 = px01 * log2(px01 / (pzz00 * py1))
-        x01y0 = px10 * log2(px10 / (pzz01 * py0))
-        x01y1 = px11 * log2(px11 / (pzz01 * py1))
-        x10y0 = px00 * log2(px00 / (pzz10 * py0))
-        x10y1 = px01 * log2(px01 / (pzz10 * py1))
-        x11y0 = px10 * log2(px10 / (pzz11 * py0))
-        x11y1 = px11 * log2(px11 / (pzz11 * py1))
-        Iz = x00y0 + x00y1 + x01y0 + x01y1 + x10y0 + x10y1 + x11y0 + x11y1
-        Izz.append(Iz)
-        q += 1
+    for p in Zi:
+        q = 0
+        for i in Z:                                 # ogarnąć TRÓJKI
+            px000 = l_zzy[q]['000'] / N             # to jest p(x,y), że x1=0, x2 = 0, y=0
+            px001 = l_zzy[q]['001'] / N
+            px010 = l_zzy[q]['010'] / N
+            px011 = l_zzy[q]['011'] / N
+            px100 = l_zzy[q]['100'] / N
+            px101 = l_zzy[q]['101'] / N
+            px110 = l_zzy[q]['110'] / N
+            px111 = l_zzy[q]['111'] / N
+            print(q)
+            pzz00 = int(P_z[0][q]['00']) / N      # to nie może być po prostu P_Z[q], tylko musi być P_Z[q][cos]
+            print(pzz00)
+            pzz01 = int(P_z[0][q]['01']) / N
+            print(pzz01)
+            pzz10 = int(P_z[0][q]['10']) / N
+            print(pzz10)
+            pzz11 = int(P_z[0][q]['11']) / N
+            print(pzz11)
+            py0 = 1 - P_y
+            py1 = P_y
+            if pzz01 == 0 or pzz00 == 0 or pzz10 == 0 or pzz11 == 0:
+                print('division by 0')
+            else:
+                x00y0 = px00 * log2(px00 / (pzz00 * py0))
+                x00y1 = px01 * log2(px01 / (pzz00 * py1))
+                x01y0 = px10 * log2(px10 / (pzz01 * py0))
+                x01y1 = px11 * log2(px11 / (pzz01 * py1))
+                x10y0 = px00 * log2(px00 / (pzz10 * py0))
+                x10y1 = px01 * log2(px01 / (pzz10 * py1))
+                x11y0 = px10 * log2(px10 / (pzz11 * py0))
+                x11y1 = px11 * log2(px11 / (pzz11 * py1))
+                Iz = x00y0 + x00y1 + x01y0 + x01y1 + x10y0 + x10y1 + x11y0 + x11y1
+                Izz.append(Iz)
+                q += 1
 
     iz = max(Izz)
-    iz_ind = Izz.index(i1)
+    print(iz)
+    iz_ind = Izz.index(iz)
     Zn = Z[iz_ind]     # to ma być wiersz, który "wybieram"
     Zi.append(Zn)
+    ind = Z2.index(Zn)
+    Zi_ind.append(ind)
 
 
 
+Zi.sort()
+print(Zi_ind)
+print(Zi)
+plik_wyj = open('output.txt' , 'w')
+plik_wyj.write(Zi_ind)
+
+plik_wyj.close()
